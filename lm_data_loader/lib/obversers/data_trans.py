@@ -17,4 +17,3 @@ class DataTrans(object):
         pass
 
 
-
