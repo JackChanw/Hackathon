@@ -4,7 +4,12 @@ import logging
 import time
 import signal
 import sys
+import Queue.Queue
+import threading
 from datetime import datetime, timedelta
+
+from topic_loader.topic_loader import TopicLoader
+from topic_loader.topic_writer import TopicWriter
 
 
 class LmDataLoaderService(object):
@@ -13,11 +18,12 @@ class LmDataLoaderService(object):
 	'''
 	def __init__(self):
 		# 正常的运行时日志Logger
-		self.logger = logging.getLogger('lm_data_loader')
-		# 错误日志Logger
-		self.wflogger = logging.getLogger('lm_data_loader.wf')
+		self.logger = logging.getLogger('domob.lightmoon')
 		self.running = False
 		self.initSignalHandler()
+		self.queue = Queue()
+		self.topic_loader = TopicLoader(self.queue)
+		self.topic_writer = TopicWriter(self.queue)
 
 	# 删除不需要处理的信号，以及增加需要处理的信号
 	# 并且设置不同的处理方法
@@ -45,8 +51,12 @@ class LmDataLoaderService(object):
 		形成kafka数据，放入kafka
 		'''
 		print 'Hackathon Good Luck!'
-	
-
+		writer = threading.Thread(target=self.topic_loader.run())
+		writer.start()
+		reader = threading.Thread(target=self.topic_loader.run())
+		reader.start()
+		writer.join()
+		reader.join()
 	
 	def stop(self):
 		self.logger.info('Lmdataloader service will stop.')

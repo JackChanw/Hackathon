@@ -1,3 +1,4 @@
+import logging
 from abstract_observer import AbstractObserver
 
 class DataTrans(object):
@@ -11,9 +12,10 @@ class DataTrans(object):
     '''
 
     def __init__(self):
-        pass
+        self.logger = logging.getLogger('domob.lightmoon')
 
     def process(self, data):
-        pass
+        return data
+
 
 
