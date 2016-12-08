@@ -61,7 +61,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 
-
+# 一次展示，最大展示数量
+MAXSIZE = 200
 
 # ip db 存放位置
 IPDB = 'conf/GeoLite2-City.mmdb' 

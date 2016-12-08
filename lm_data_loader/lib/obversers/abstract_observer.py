@@ -11,5 +11,6 @@ class AbstractObserver(object):
     @abstractmethod
     def process(self, data):
         pass
+
     def notify(self, data):
         self.process(data)
