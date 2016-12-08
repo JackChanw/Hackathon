@@ -13,6 +13,7 @@
 ## json数据格式
 - 实时数据请求
 ```
+dataObject
 {
 	productId  : "产品线id",
 	productName: "产品线名称",
@@ -27,6 +28,13 @@
 		x    : "经度"，
 		y    : "纬度"
 	}
+}
+
+{
+	events:[
+		dataObject,
+	]
+	total: 100
 }
 ```
 - 汇总数据请求
