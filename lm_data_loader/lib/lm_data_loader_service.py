@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
 import logging
@@ -45,6 +44,7 @@ class LmDataLoaderService(object):
 		然后通过iploader查询需要的ip地址经纬度
 		形成kafka数据，放入kafka
 		'''
+		print 'Hackathon Good Luck!'
 	
 
 	
