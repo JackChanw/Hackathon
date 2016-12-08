@@ -1,0 +1,55 @@
+#! /usr/bin/env python
+# -*- coding: utf-8 -*-
+
+import logging
+import time
+import signal
+import sys
+from datetime import datetime, timedelta
+
+
+class LmDataLoaderService(object):
+	'''
+	LmDataLoader Service
+	'''
+	def __init__(self):
+		# 正常的运行时日志Logger
+		self.logger = logging.getLogger('lm_data_loader')
+		# 错误日志Logger
+		self.wflogger = logging.getLogger('lm_data_loader.wf')
+		self.running = False
+		self.initSignalHandler()
+
+	# 删除不需要处理的信号，以及增加需要处理的信号
+	# 并且设置不同的处理方法
+	# 这里默认处理了SIGTERM和SIGINT，并且尝试停止service
+	# SIGINT = 2，可使用kill -2 pid 或 当CTRL+C终止程序时发出
+	# SIGTERM = 15，可使用kill -15 pid发出
+	def initSignalHandler(self):
+		signals = (signal.SIGTERM, signal.SIGINT)
+		self.signalHandlers = {}
+		for sig in signals:
+			self.signalHandlers[sig] = signal.getsignal(sig)
+			signal.signal(sig, self.handleSignal)
+	
+	def handleSignal(self, signal, frame):
+		self.logger.info('Handle signal %d, stop service', signal)
+		self.logger.info('Try to stop all workers.')
+		self.stop()
+		self.logger.info('Bye-bye.')
+		sys.exit(0)
+
+	def run(self):
+		'''
+		实时将kafka的数据取出
+		然后通过iploader查询需要的ip地址经纬度
+		形成kafka数据，放入kafka
+		'''
+	
+
+	
+	def stop(self):
+		self.logger.info('Lmdataloader service will stop.')
+		self.running = False
+
+# vim: set noexpandtab ts=4 sts=4 sw=4 :
