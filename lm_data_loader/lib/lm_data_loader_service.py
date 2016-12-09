@@ -36,7 +36,7 @@ class LmDataLoaderService(object):
 		for sig in signals:
 			self.signalHandlers[sig] = signal.getsignal(sig)
 			signal.signal(sig, self.handleSignal)
-	
+
 	def handleSignal(self, signal, frame):
 		self.logger.info('Handle signal %d, stop service', signal)
 		self.logger.info('Try to stop all workers.')
@@ -51,13 +51,18 @@ class LmDataLoaderService(object):
 		形成kafka数据，放入kafka
 		'''
 		print 'Hackathon Good Luck!'
-		writer = threading.Thread(target=self.topic_loader.run())
-		writer.start()
-		reader = threading.Thread(target=self.topic_loader.run())
+		reader = threading.Thread(target=self.topic_loader.run)
+		reader.daemon = True
 		reader.start()
+		print "writer started"
+
+		writer = threading.Thread(target=self.topic_writer.run)
+		writer.daemon = True
+		writer.start()
+		print "loader started"
 		writer.join()
 		reader.join()
-	
+
 	def stop(self):
 		self.logger.info('Lmdataloader service will stop.')
 		self.running = False

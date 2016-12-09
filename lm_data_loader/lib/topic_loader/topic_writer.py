@@ -2,6 +2,8 @@
 
 import logging
 import json
+import time
+from pykafka import *
 from django.conf import settings
 
 class TopicWriter(object):
@@ -12,16 +14,24 @@ class TopicWriter(object):
     def __init__(self, queue):
         self.logger = logging.getLogger('domob.lightmoon.writer')
         self.queue = queue
+        self.client = KafkaClient(hosts="10.0.0.207:9555")
+        self.topic = self.client.topics['lightmoon_test_2']
+        self.producer = self.topic.get_sync_producer()
+        self.sum_topic = self.client.topics['lm_sum_test_2']
+        self.sum_producer = self.sum_topic.get_sync_producer()
 
     def write_data(self, data):
         '''
         load data 数据 这里单独起一个进程，
         间隔2s发送到kafka一次数据
         '''
-        pass
+        # with self.topic.get_sync_producer() as producer:
+        self.producer.produce(data)
+        print "produce one data"
 
     def write_sum(self, sum_data):
-        pass
+        self.sum_producer.produce(sum_data)
+        print "produce one sum_data"
 
     def load(self):
         data_list = []
@@ -38,7 +48,7 @@ class TopicWriter(object):
                 if max_num > settings.MAXSIZE:
                     self.queue.clear()
                     break
-            except Excettion, e:
+            except Exception, e:
                 break
         d = {
             'total' : max_num,
@@ -54,20 +64,18 @@ class TopicWriter(object):
                 sum_data['eventName'] = name
                 sum_data['number'] = r[-1]
                 sum_data['eventUrl'] = r[0]
-        print 'sdfasdfsadfasf!!!!!!!!!!!!'
         print d,
         print sum_data
         return json.dumps(d), json.dumps(sum_data)
 
 
-    def run():
-        self.logging.info('Topic writer started!')
+    def run(self):
+        self.logger.info('Topic writer started!')
         while True:
             start = time.time()
             data, sum_data = self.load()
-            self.write(data)
+            self.write_data(data)
             self.write_sum(sum_data)
             end = time.time()
-            self.logging.info('Topic writer load finish cost %f', start-end)
+            self.logger.info('Topic writer load finish cost %f', start-end)
             time.sleep(2)
-

@@ -22,10 +22,10 @@ class TopicLoader(object):
         '''
         从kafka取出数据并发送到下游处理
         '''
-#        consumer = self.topic.get_balanced_consumer(consumer_group="group", zookeeper_connect='10.0.0.207:21815')
-        consumer = self.topic.get_simple_consumer()
+        consumer = self.topic.get_balanced_consumer(consumer_group="group", zookeeper_connect='10.0.0.207:21815')
+        # consumer = self.topic.get_simple_consumer()
         for msg in consumer:
-            print self.queue.qsize()
+            # print self.queue.qsize()
             print msg.value
             try :
                 json_obj = json.loads(msg.value)
@@ -40,8 +40,11 @@ class TopicLoader(object):
         发布数据，后期如果出现多个topic的情况就注册多个观察者
         '''
         res = self.data_trans.process(data)
+        print res
         if res:
+            print "data process success"
             self.queue.put(res)
+        print self.queue.qsize()
 
     def run(self):
         # self.logger.info('Topic reader started!')
