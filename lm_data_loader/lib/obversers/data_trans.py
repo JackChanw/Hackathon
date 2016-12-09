@@ -37,9 +37,9 @@ class DataTrans(object):
         self.data_info.eventPrice = data['eventPrice']
         self.data_info.eventUrl   = data['eventUrl']
         self.data_info.eventName  = data['eventName']
-        add_detail = threading.Thread(target=self.add_detail())
+        add_detail = threading.Thread(target=self.add_detail)
         add_detail.start()
-        data = self.trans_data(data)
+        return self.trans_data(data)
 
     def add_detail(self):
         redis_cli = redis.Redis(connection_pool=self.pool)
@@ -66,7 +66,5 @@ class DataTrans(object):
             return None
         tmp_data['userCity']  = user_ip[-1]
         tmp_data['eventCity'] = event_country[-1]
-        print tmp_data
         return json.dumps(tmp_data)
-
 

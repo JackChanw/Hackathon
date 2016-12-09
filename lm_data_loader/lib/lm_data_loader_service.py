@@ -53,13 +53,10 @@ class LmDataLoaderService(object):
 		print 'Hackathon Good Luck!'
 		reader = threading.Thread(target=self.topic_loader.run)
 		reader.daemon = True
-		reader.start()
-		print "writer started"
-
 		writer = threading.Thread(target=self.topic_writer.run)
 		writer.daemon = True
 		writer.start()
-		print "loader started"
+		reader.start()
 		writer.join()
 		reader.join()
 

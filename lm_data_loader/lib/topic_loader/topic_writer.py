@@ -41,6 +41,7 @@ class TopicWriter(object):
             try:
                 r = self.queue.get_nowait()
                 data_list.append(r)
+                r = json.loads(r)
                 if not sum_dic.has_key(r['eventName']):
                     sum_dic[r['eventName']] = [r, 0]
                 sum_dic[r['eventName']][-1] += 1
@@ -49,6 +50,7 @@ class TopicWriter(object):
                     self.queue.clear()
                     break
             except Exception, e:
+                print e
                 break
         d = {
             'total' : max_num,
@@ -59,6 +61,8 @@ class TopicWriter(object):
             'eventurl': "",
             'number': 0
         }
+        print '#####'
+        print sum_dic
         for name, r in sum_dic.items():
             if sum_data['number'] < r[-1]:
                 sum_data['eventName'] = name
