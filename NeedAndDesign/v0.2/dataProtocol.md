@@ -8,7 +8,7 @@
 |eventId  |int| 事件id |
 |eventIp  |string|事件ip |
 |behavior| string|触发事件，点击，激活，浏览|
-|eventPrice|int 原始价值乘1000000 | 事件价值 |
+|eventPrice|int | 事件价值 原始价值乘1000000 |
 |eventUrl| string|事件logo地址|
 |eventName|string| 事件内容|
 |ts |int| 时间戳|
