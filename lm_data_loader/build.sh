@@ -1,7 +1,7 @@
 #!/bin/bash
 
-PNAME=dbb_robot_ai
-VERSION=1.2.2
+PNAME=lm_data_loader
+VERSION=1.0.0
 
 rm -rf target
 mkdir target
