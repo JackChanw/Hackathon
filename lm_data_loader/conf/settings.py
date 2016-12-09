@@ -73,6 +73,10 @@ MAXSIZE = 200
 # ip db 存放位置
 IPDB = 'conf/17monipdb.dat'
 
+TIME = 1
+
+MESSAGE_NUM = 5
+
 # 日志配置
 LOGGING = {
     'version': 1,
@@ -143,6 +147,7 @@ LOGGING = {
 }
 
 KAFKA_HOST="10.0.0.207:9555"
-KAFKA_TOPIC_RECIVE="ghw_test_2"
+KAFKA_TOPIC_RECIVE="ghw_test_4"
 KAFKA_TOPIC_DATA="lightmoon_test_2"
 KAFKA_TOPIC_SUM_DATA="lm_sum_test_2"
+KAFKA_TOPIC_MESSAGE_DATA="lm_message_test_2"

@@ -8,6 +8,7 @@ import json
 from obversers.data_detail import DataInfo
 from obversers.abstract_observer import AbstractObserver
 from iptrans.ipip import IP
+from obversers.constant import city_list
 from django.conf import settings
 
 
@@ -65,6 +66,9 @@ class DataTrans(object):
         if event_ip[0] == 'N/A' or event_country != '中国':
             return None
         tmp_data['userCity']  = user_ip[-1]
-        tmp_data['eventCity'] = event_country[-1]
+        tmp_data['eventCity'] = event_ip[-1]
+        if not city_list.has_key(tmp_data['userCity'].encode('utf-8'))\
+            or not city_list.has_key(tmp_data['eventCity'].encode('utf-8')): 
+            return None
         return json.dumps(tmp_data)
 

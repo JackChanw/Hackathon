@@ -20,11 +20,14 @@ class TopicWriter(object):
         self.producer = self.topic.get_sync_producer()
         self.sum_topic = self.client.topics[settings.KAFKA_TOPIC_SUM_DATA]
         self.sum_producer = self.sum_topic.get_sync_producer()
+        self.message_topic = self.client.topics[settings.KAFKA_TOPIC_MESSAGE_DATA]
+        self.message_topic = self.client.topics[settings.KAFKA_TOPIC_MESSAGE_DATA]
+        self.message_producer = self.message_topic.get_sync_producer()
         self.color_switcher = {
             0: 90,
             1: 20,
             2: 40,
-            3: 80
+            3: 100
         }
 
     def write_data(self, data):
@@ -40,7 +43,11 @@ class TopicWriter(object):
         self.sum_producer.produce(sum_data)
         print "produce one sum_data"
 
+    def write_message(self, message):
+        self.message_producer.produce(message)
+        
     def load(self):
+        message_list = []
         data_list = []
         sum_dic = {}
         max_num = 0
@@ -49,14 +56,19 @@ class TopicWriter(object):
                 r = self.queue.get_nowait()
                 r = json.loads(r)
                 data_list.append([
-                    {'name': r['userCity']},{'name': r['eventCity'], 'value':self.color_switcher.get(r['productId'])}
+                    {'name': r['userCity']},{'name': r['eventCity'], 'value': self.color_switcher.get(r['productId'])}
                 ])
+                if len(message_list) < settings.MESSAGE_NUM:
+                    message = '''{}用户{}了{}'''.format(
+                        r['userCity'], r['behavior'], r['eventName']
+                    )
+                    message_list.append(message)
                 if not sum_dic.has_key(r['eventName']):
                     sum_dic[r['eventName']] = [r, 0]
                 sum_dic[r['eventName']][-1] += 1
                 max_num += 1
                 if max_num > settings.MAXSIZE:
-                    self.queue.queue.clear()  
+                    self.queue.queue.clear()
                     break
             except Exception, e:
                 print e
@@ -71,18 +83,17 @@ class TopicWriter(object):
                 sum_data['eventName'] = name
                 sum_data['number'] = r[-1]
                 sum_data['eventUrl'] = r[0]
-        print sum_data
-        print json.dumps(data_list)
-        return json.dumps(data_list), json.dumps(sum_data)
+        return json.dumps(data_list), json.dumps(sum_data), json.dumps(message_list)
 
 
     def run(self):
         self.logger.info('Topic writer started!')
         while True:
             start = time.time()
-            data, sum_data = self.load()
+            data, sum_data, message = self.load()
             self.write_data(data)
             self.write_sum(sum_data)
+            self.write_message(message)
             end = time.time()
             self.logger.info('Topic writer load finish cost %f', start-end)
-            time.sleep(2)
+        #    time.sleep(settings.TIME)
