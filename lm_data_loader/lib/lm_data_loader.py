@@ -42,7 +42,6 @@ if __name__ == "__main__":
     from django.conf import settings
     # ===================================================
     # Let's rock 'n roll!
-    print sys.path
     from lm_data_loader_service import LmDataLoaderService
     lml = LmDataLoaderService()
     lml.run()

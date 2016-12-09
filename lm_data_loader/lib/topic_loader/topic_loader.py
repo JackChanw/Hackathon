@@ -8,6 +8,7 @@ class TopicReader(object):
     '''
 
     def __init__(self, queue):
+        self.logger = loggint.getLogger('domob.lightmoon.reader')
         self.queue = queue
         self.data_trans = DataTrans()
 
@@ -26,6 +27,7 @@ class TopicReader(object):
             self.queue.put(res)
 
     def run():
+        self.logger.info('Topic reader started!')
         while True:
             self.fetch_and_process()
 

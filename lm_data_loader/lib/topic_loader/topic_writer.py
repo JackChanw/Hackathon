@@ -9,7 +9,7 @@ class TopicWriter(object):
     '''
 
     def __init__(self, queue):
-        self.logger = logging.getLogger('domob.lightmoon')
+        self.logger = logging.getLogger('domob.lightmoon.writer')
         self.queue = queue
 
     def write(self, data):
@@ -39,6 +39,7 @@ class TopicWriter(object):
 
 
     def run():
+        self.logging.info('Topic writer started!')
         while True:
             start = time.time()
             data = self.load()

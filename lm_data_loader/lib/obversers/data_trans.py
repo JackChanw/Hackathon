@@ -1,3 +1,5 @@
+# coding: utf-8
+
 import logging
 from abstract_observer import AbstractObserver
 from django.db import close_old_connections

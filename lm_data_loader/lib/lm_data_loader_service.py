@@ -4,7 +4,7 @@ import logging
 import time
 import signal
 import sys
-import Queue.Queue
+from Queue import Queue
 import threading
 from datetime import datetime, timedelta
 
