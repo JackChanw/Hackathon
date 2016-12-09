@@ -7,7 +7,6 @@ import json
 
 from obversers.data_detail import DataInfo
 from obversers.abstract_observer import AbstractObserver
-from db.models import AdDetail, OwAdCreative, OwMediaMedia
 from iptrans.ipip import IP
 from django.conf import settings
 
