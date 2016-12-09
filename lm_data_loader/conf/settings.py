@@ -45,7 +45,7 @@ ALLOWED_HOSTS = []
 
 REDIS_CONFIG = {
     "host": "10.0.0.203",
-    "port": 16381,  
+    "port": 16381,
     "db": 11,
 }
 # Internationalization
@@ -71,7 +71,7 @@ STATIC_URL = '/static/'
 MAXSIZE = 200
 
 # ip db 存放位置
-IPDB = 'conf/17monipdb.dat' 
+IPDB = 'conf/17monipdb.dat'
 
 # 日志配置
 LOGGING = {
@@ -141,3 +141,8 @@ LOGGING = {
 
     },
 }
+
+KAFKA_HOST="10.0.0.207:9555"
+KAFKA_TOPIC_RECIVE="ghw_test_2"
+KAFKA_TOPIC_DATA="lightmoon_test_2"
+KAFKA_TOPIC_SUM_DATA="lm_sum_test_2"
