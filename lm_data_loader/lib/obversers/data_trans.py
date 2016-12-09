@@ -3,20 +3,17 @@
 import logging
 import redis
 import threading
+import json
 
 from django.db import close_old_connections
 from obversers.data_detail import DataInfo
 from obversers.abstract_observer import AbstractObserver
 from db.models import AdDetail, OwAdCreative, OwMediaMedia
-from iptrans.ip_trans import GeoIp
+from iptrans.ipip import IP
 
 
 class DataTrans(object):
     '''
-    转化广告主数据
-    转化媒体数据
-    转化用户数据
-    相关数据累计
     实时数据存入Queue中
     非实时数据存入redis中
     '''
@@ -30,82 +27,45 @@ class DataTrans(object):
         self.num = 0
         self.data_info = DataInfo()
         self.geo_ip = GeoIp()
+        self.ipfinder = IP.load(settings.IPDB) 
 
     def process(self, data):
-        self.data_info.uid = data['uid']
-        self.data_info.user_ip = data['userIp']
-        self.data_info.media_id = data['mediaId']
-        self.data_info.cid = data['cid']
-        self.data_info.event = data['event']
+        data = json.loads(data)
         self.data_info.product_id = data['productId']
-        get_detail = threading.Thread(target=self.get_detail())
-        get_detail.start()
+        self.data_info.user_ip    = data['userIp']
+        self.data_info.event_id   = data['eventId']
+        self.data_info.event_ip   = data['eventIp']
+        self.data_info.behavior   = data['behavior']
+        self.data_info.eventPrice = data['eventPrice']
+        self.data_info.eventUrl   = data['eventUrl']
+        self.data_info.eventName  = data['eventName']
         add_detail = threading.Thread(target=self.add_detail())
         add_detail.start()
         data = self.trans(data)
 
     def add_detail(self):
         redis_cli = redis.Redis(connection_pool=self.pool)
-        redis_cli.incr('key_ads')
-        redis_cli.sadd('key_cids', self.data_info.cid)
-        redis_cli.sadd('key_medias', self.data_info.media_id)
-        # 首席
-        if product_id == 1:
-            if self.ad_creative.has_key(self.data_info.cid):
-                user_share = self.ad_creative[self.data_info.cid].price/100000.0
-                redis_cli.incrbyfloat('key_user_share', user_share)
-        # dvx
-        if product_id == 2:
-            if self.media.has_key(self.data_info.media_id):
-                media_share = self.media[self.data_info.media_id].video_floor_price/1000000.0
-                redis_cli.incrbyfloat('key_media_share', media_share)
-
-
-    def get_detail(self):
-        if not self.ad_creative.has_key(self.data_info.cid):
-            try:
-                ad_creative = OwAdCreative.objects.filter(uid=uid)
-                self.ad_creative[uid] = ad_creative
-            except Exception, e:
-                self.logger.error(e)
-        if not self.ad_detail.has_key(uid):
-            try:
-                ad_detail = AdDetail.objects.filter(uid=uid)
-                self.ad_detail = ad_detail
-            except Exception, e:
-                self.logger.error(e)
-        if not self.media.has_key(media_id):
-            try:
-                self.media[uid] = OwMediaMedia.objects.filter(mid=media_id)
-            except Exception, e:
-                self.logger.error(e)
+        redis_cli.incr('key_events')
+        key = 'key_%s_event_share'%self.data_info.product_id
+        price = self.data_info.eventPrice / 1000000.0
+        redis_cli.incrfloat(key, price)
 
     def trans_data(data):
         tmp_data = {}
-        tmp_data['productId'] = data['productId']
-        if self.ad_creatice.has_key(self.data_info.cid):
-            tmp_data['productName'] = self.ad_creative[self.data_info.cid].name
-        else:
+        tmp_data['productId'] = self.data_info.product_id
+        tmp_data['userIp']    = self.data_info.user_ip
+        tmp_data['eventId']   = self.data_info.event_id   
+        tmp_data['behavior']  = self.data_info.behavior   
+        tmp_data['eventUrl']  = self.data_info.eventUrl 
+        tmp_data['eventName'] = self.data_info.eventName
+        user_ip = self.ipfinder.find(self.data_info.user_ip).split(' ')
+        user_country = user_ip[0]
+        if user_ip[0] == 'N/A' or user_country != '中国':
             return None
-        tmp_data['event'] = data['event']
-        if self.ad_creatice.has_key(self.data_info.cid):
-            tmp_data['adName'] = self.ad_creative[self.data_info.cid].name
-        else:
+        event_ip = self.ipfinder.find(self.data_info.event_ip).split(' ')
+        event_country = event_ip[0]
+        if event_ip[0] == 'N/A' or event_country != '中国':
             return None
-        user_ip_detail = self.geo_ip.find(data['userIp'])
-        self.logger.info('Geo get ip country %s', ip_detail.country_name)
-        if user_ip_detail.country_name != '中国':
-            return None 
-        tmp_data['address'] = user_ip_detail.city_name
-        tmp_data['userPoint'] = {}
-        tmp_data['userPoint']['x'] = user_ip_detail.longitude
-        tmp_data['userPoint']['y'] = user_ip_detail.latitude
-        if self.ad_detail.has_key(data['uid']):
-           ad_ip = self.ad_detail['uid'].uip 
-           ad_ip_detail = self.geo_ip.find(ad_ip)
-        else:
-            return None
-        tmp_data['adPoint'] = {}
-        tmp_data['adPoint']['x'] = ad_ip_detail.longitude
-        tmp_data['adPoint']['y'] = ad_ip_detail.latitude
-        return tmp_data
+        tmp_data['userCity']  = user_ip[-1]
+        tmp_data['eventCity'] = event_country[-1]
+        return jons.loads(tmp_data)

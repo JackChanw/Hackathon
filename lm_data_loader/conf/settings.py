@@ -71,7 +71,7 @@ STATIC_URL = '/static/'
 MAXSIZE = 200
 
 # ip db 存放位置
-IPDB = 'conf/GeoLite2-City.mmdb' 
+IPDB = 'conf/17monipdb.dat' 
 
 # 日志配置
 LOGGING = {
