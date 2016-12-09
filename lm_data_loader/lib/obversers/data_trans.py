@@ -25,10 +25,10 @@ class DataTrans(object):
         self.media = {}
         self.num = 0
         self.data_info = DataInfo()
-        self.ipfinder = IP.load(settings.IPDB) 
+        self.ipfinder = IP() 
+        self.ipfinder.load(settings.IPDB)
 
     def process(self, data):
-        data = json.loads(data)
         self.data_info.product_id = data['productId']
         self.data_info.user_ip    = data['userIp']
         self.data_info.event_id   = data['eventId']
@@ -39,16 +39,16 @@ class DataTrans(object):
         self.data_info.eventName  = data['eventName']
         add_detail = threading.Thread(target=self.add_detail())
         add_detail.start()
-        data = self.trans(data)
+        data = self.trans_data(data)
 
     def add_detail(self):
         redis_cli = redis.Redis(connection_pool=self.pool)
         redis_cli.incr('key_events')
         key = 'key_%d_event_share'%self.data_info.product_id
         price = self.data_info.eventPrice / 1000000.0
-        redis_cli.incrfloat(key, price)
+        redis_cli.incrbyfloat(key, price)
 
-    def trans_data(data):
+    def trans_data(self, data):
         tmp_data = {}
         tmp_data['productId'] = self.data_info.product_id
         tmp_data['userIp']    = self.data_info.user_ip
@@ -56,14 +56,17 @@ class DataTrans(object):
         tmp_data['behavior']  = self.data_info.behavior   
         tmp_data['eventUrl']  = self.data_info.eventUrl 
         tmp_data['eventName'] = self.data_info.eventName
-        user_ip = self.ipfinder.find(self.data_info.user_ip).split(' ')
+        user_ip = self.ipfinder.find(self.data_info.user_ip).strip().split('\t')
         user_country = user_ip[0]
         if user_ip[0] == 'N/A' or user_country != '中国':
             return None
-        event_ip = self.ipfinder.find(self.data_info.event_ip).split(' ')
+        event_ip = self.ipfinder.find(self.data_info.event_ip).strip().split('\t')
         event_country = event_ip[0]
         if event_ip[0] == 'N/A' or event_country != '中国':
             return None
         tmp_data['userCity']  = user_ip[-1]
         tmp_data['eventCity'] = event_country[-1]
-        return jons.loads(tmp_data)
+        print tmp_data
+        return json.dumps(tmp_data)
+
+

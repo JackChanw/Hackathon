@@ -54,6 +54,9 @@ class TopicWriter(object):
                 sum_data['eventName'] = name
                 sum_data['number'] = r[-1]
                 sum_data['eventUrl'] = r[0]
+        print 'sdfasdfsadfasf!!!!!!!!!!!!'
+        print d,
+        print sum_data
         return json.dumps(d), json.dumps(sum_data)
 
 
