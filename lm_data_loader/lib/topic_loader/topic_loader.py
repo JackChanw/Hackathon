@@ -5,6 +5,7 @@ from obversers.data_trans import DataTrans
 from Queue import Queue
 from pykafka import *
 import json
+from django.conf import settings
 
 class TopicLoader(object):
     '''
@@ -14,8 +15,8 @@ class TopicLoader(object):
     def __init__(self, queue):
         self.logger = logging.getLogger('domob.lightmoon.reader')
         self.queue = queue
-        self.client = KafkaClient(hosts="10.0.0.207:9555")
-        self.topic = self.client.topics['ghw_test_2']
+        self.client = KafkaClient(hosts=settings.KAFKA_HOST)
+        self.topic = self.client.topics[settings.KAFKA_TOPIC_RECIVE]
         self.data_trans = DataTrans()
 
     def fetch_and_process(self):
@@ -25,7 +26,6 @@ class TopicLoader(object):
         consumer = self.topic.get_balanced_consumer(consumer_group="group", zookeeper_connect='10.0.0.207:21815')
         # consumer = self.topic.get_simple_consumer()
         for msg in consumer:
-            # print self.queue.qsize()
             print msg.value
             try :
                 json_obj = json.loads(msg.value)
@@ -48,9 +48,7 @@ class TopicLoader(object):
 
     def run(self):
         # self.logger.info('Topic reader started!')
-        while True:
-            # print self.queue.qsize()
-            self.fetch_and_process()
+        self.fetch_and_process()
 
 if __name__=="__main__":
     queue = Queue()

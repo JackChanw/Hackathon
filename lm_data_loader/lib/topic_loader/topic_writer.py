@@ -14,10 +14,10 @@ class TopicWriter(object):
     def __init__(self, queue):
         self.logger = logging.getLogger('domob.lightmoon.writer')
         self.queue = queue
-        self.client = KafkaClient(hosts="10.0.0.207:9555")
-        self.topic = self.client.topics['lightmoon_test_2']
+        self.client = KafkaClient(hosts=settings.KAFKA_HOST)
+        self.topic = self.client.topics[settings.KAFKA_TOPIC_DATA]
         self.producer = self.topic.get_sync_producer()
-        self.sum_topic = self.client.topics['lm_sum_test_2']
+        self.sum_topic = self.client.topics[settings.KAFKA_TOPIC_SUM_DATA]
         self.sum_producer = self.sum_topic.get_sync_producer()
 
     def write_data(self, data):

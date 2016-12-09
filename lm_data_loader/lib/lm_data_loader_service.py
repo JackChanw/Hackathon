@@ -11,6 +11,7 @@ from datetime import datetime, timedelta
 from topic_loader.topic_loader import TopicLoader
 from topic_loader.topic_writer import TopicWriter
 
+GLOBAL_RUNNING=True
 
 class LmDataLoaderService(object):
 	'''
@@ -62,6 +63,7 @@ class LmDataLoaderService(object):
 
 	def stop(self):
 		self.logger.info('Lmdataloader service will stop.')
+		GLOBAL_RUNNING=False
 		self.running = False
 
 # vim: set noexpandtab ts=4 sts=4 sw=4 :
