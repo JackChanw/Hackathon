@@ -39,9 +39,17 @@ class TopicWriter(object):
             except Excettion, e:
                 continue
         d = {
-                'total' : max_num,
-                'events': data_list
+            'total' : max_num,
+            'events': data_list
         }
+        sum_data = {
+            'adName': "",
+            'number': 0
+        }
+        for name, times in sum_dic.items():
+            if sum_data['number'] < times:
+                sum_data['adName'] = name
+                sum_data['number'] = times
         return json.dumps(d), json.dumps(sum_data)
 
 
