@@ -45,7 +45,8 @@ dataObject
 |信息 | 备注|
 |-------|------|
 |key_media_share|媒体分成总计|
-|key_ads|分发广告主总计数量|
+|key_ads|分发广告总计数量|
 |key_user_share|用户分成总计|
-|key_acts|激活广告总计|
+|key_cids|分发广告创意集合|
+|key_media_ids|对接媒体集合|
 

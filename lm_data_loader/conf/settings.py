@@ -27,6 +27,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+
 # # Database
 # # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
@@ -42,6 +43,11 @@ DATABASES = {
     }
 }
 
+REDIS_CONFIG = {
+    "host": "10.0.0.203",
+    "port": 7379,  
+    "db": 11,
+}
 # Internationalization
 # https://docs.djangoproject.com/en/1.9/topics/i18n/
 
