@@ -25,7 +25,6 @@ class DataTrans(object):
         self.media = {}
         self.num = 0
         self.data_info = DataInfo()
-        self.geo_ip = GeoIp()
         self.ipfinder = IP.load(settings.IPDB) 
 
     def process(self, data):

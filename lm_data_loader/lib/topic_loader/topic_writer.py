@@ -31,7 +31,7 @@ class TopicWriter(object):
             try:
                 r = self.queue.get_nowait()
                 data_list.append(r)
-                if not sum_dic.has_key(r['eventName']:
+                if not sum_dic.has_key(r['eventName']):
                     sum_dic[r['eventName']] = [r, 0]
                 sum_dic[r['eventName']][-1] += 1
                 max_num += 1
