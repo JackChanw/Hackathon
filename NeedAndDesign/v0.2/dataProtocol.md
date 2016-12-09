@@ -38,6 +38,10 @@ dataObject
 }
 ```
 - 汇总数据请求
+{
+	adName : "",
+	number : 0,
+}
 
 >汇总请求存在redis中
 

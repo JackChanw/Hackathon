@@ -88,6 +88,10 @@ class DataTrans(object):
         else:
             return None
         tmp_data['event'] = data['event']
+        if self.ad_creatice.has_key(self.data_info.cid):
+            tmp_data['adName'] = self.ad_creative[self.data_info.cid].name
+        else:
+            return None
         user_ip_detail = self.geo_ip.find(data['userIp'])
         self.logger.info('Geo get ip country %s', ip_detail.country_name)
         if user_ip_detail.country_name != '中国':
@@ -96,6 +100,12 @@ class DataTrans(object):
         tmp_data['userPoint'] = {}
         tmp_data['userPoint']['x'] = user_ip_detail.longitude
         tmp_data['userPoint']['y'] = user_ip_detail.latitude
-        ad_ip_detail = self.geo_ip.find(data[])
-
-
+        if self.ad_detail.has_key(data['uid']):
+           ad_ip = self.ad_detail['uid'].uip 
+           ad_ip_detail = self.geo_ip.find(ad_ip)
+        else:
+            return None
+        tmp_data['adPoint'] = {}
+        tmp_data['adPoint']['x'] = ad_ip_detail.longitude
+        tmp_data['adPoint']['y'] = ad_ip_detail.latitude
+        return tmp_data
