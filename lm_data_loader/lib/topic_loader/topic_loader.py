@@ -40,9 +40,7 @@ class TopicLoader(object):
         发布数据，后期如果出现多个topic的情况就注册多个观察者
         '''
         res = self.data_trans.process(data)
-        print res
         if res:
-            print "data process success"
             self.queue.put(res)
         print self.queue.qsize()
 

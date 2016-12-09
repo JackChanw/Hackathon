@@ -3,6 +3,7 @@
 import logging
 import json
 import time
+from Queue import Queue
 from pykafka import *
 from django.conf import settings
 
@@ -19,6 +20,12 @@ class TopicWriter(object):
         self.producer = self.topic.get_sync_producer()
         self.sum_topic = self.client.topics['lm_sum_test_2']
         self.sum_producer = self.sum_topic.get_sync_producer()
+        self.color_switcher = {
+            0: 90,
+            1: 20,
+            2: 40,
+            3: 80
+        }
 
     def write_data(self, data):
         '''
@@ -40,37 +47,33 @@ class TopicWriter(object):
         while True:
             try:
                 r = self.queue.get_nowait()
-                data_list.append(r)
                 r = json.loads(r)
+                data_list.append([
+                    {'name': r['userCity']},{'name': r['eventCity'], 'value':self.color_switcher.get(r['productId'])}
+                ])
                 if not sum_dic.has_key(r['eventName']):
                     sum_dic[r['eventName']] = [r, 0]
                 sum_dic[r['eventName']][-1] += 1
                 max_num += 1
                 if max_num > settings.MAXSIZE:
-                    self.queue.clear()
+                    self.queue.queue.clear()  
                     break
             except Exception, e:
                 print e
                 break
-        d = {
-            'total' : max_num,
-            'events': data_list
-        }
         sum_data = {
             'eventName': "",
             'eventurl': "",
             'number': 0
         }
-        print '#####'
-        print sum_dic
         for name, r in sum_dic.items():
             if sum_data['number'] < r[-1]:
                 sum_data['eventName'] = name
                 sum_data['number'] = r[-1]
                 sum_data['eventUrl'] = r[0]
-        print d,
         print sum_data
-        return json.dumps(d), json.dumps(sum_data)
+        print json.dumps(data_list)
+        return json.dumps(data_list), json.dumps(sum_data)
 
 
     def run(self):
