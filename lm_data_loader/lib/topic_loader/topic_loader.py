@@ -23,7 +23,8 @@ class TopicLoader(object):
         '''
         从kafka取出数据并发送到下游处理
         '''
-        consumer = self.topic.get_balanced_consumer(consumer_group="group", zookeeper_connect='10.0.0.207:21815')
+        consumer = self.topic.get_balanced_consumer(consumer_group="group", \
+            zookeeper_connect='10.0.0.207:21815', reset_offset_on_start=True)
         # consumer = self.topic.get_simple_consumer()
         for msg in consumer:
             print msg.value

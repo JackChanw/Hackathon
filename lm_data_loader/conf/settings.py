@@ -31,17 +31,6 @@ ALLOWED_HOSTS = []
 # # Database
 # # https://docs.djangoproject.com/en/1.9/ref/settings/#databases
 
-#DATABASES = {
-#    'default': {
-#        'ENGINE': 'django.db.backends.mysql',
-#        'NAME': 'searchad',
-#        'USER': 'domob',
-#        'PASSWORD': 'domob',
-#        'HOST': '10.0.0.209',
-#        'PORT': '3306',
-#        'OPTIONS': {'charset': 'utf8mb4'}
-#    }
-#}
 
 REDIS_CONFIG = {
     "host": "10.0.0.203",
