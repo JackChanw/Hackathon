@@ -31,25 +31,29 @@ class TopicWriter(object):
             try:
                 r = self.queue.get_nowait()
                 data_list.append(r)
-                sum_dic[r['adName']] = sum_dic.get(r['adName'], 0) + 1
+                if not sum_dic.has_key(r['eventName']:
+                    sum_dic[r['eventName']] = [r, 0]
+                sum_dic[r['eventName']][-1] += 1
                 max_num += 1
                 if max_num > settings.MAXSIZE:
                     self.queue.clear()
                     break
             except Excettion, e:
-                continue
+                break
         d = {
             'total' : max_num,
             'events': data_list
         }
         sum_data = {
-            'adName': "",
+            'eventName': "",
+            'eventurl': "",
             'number': 0
         }
-        for name, times in sum_dic.items():
-            if sum_data['number'] < times:
-                sum_data['adName'] = name
-                sum_data['number'] = times
+        for name, r in sum_dic.items():
+            if sum_data['number'] < r[-1]:
+                sum_data['eventName'] = name
+                sum_data['number'] = r[-1]
+                sum_data['eventUrl'] = r[0]
         return json.dumps(d), json.dumps(sum_data)
 
 

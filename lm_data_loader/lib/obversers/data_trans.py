@@ -5,11 +5,11 @@ import redis
 import threading
 import json
 
-from django.db import close_old_connections
 from obversers.data_detail import DataInfo
 from obversers.abstract_observer import AbstractObserver
 from db.models import AdDetail, OwAdCreative, OwMediaMedia
 from iptrans.ipip import IP
+from django.conf import settings
 
 
 class DataTrans(object):
@@ -46,7 +46,7 @@ class DataTrans(object):
     def add_detail(self):
         redis_cli = redis.Redis(connection_pool=self.pool)
         redis_cli.incr('key_events')
-        key = 'key_%s_event_share'%self.data_info.product_id
+        key = 'key_%d_event_share'%self.data_info.product_id
         price = self.data_info.eventPrice / 1000000.0
         redis_cli.incrfloat(key, price)
 

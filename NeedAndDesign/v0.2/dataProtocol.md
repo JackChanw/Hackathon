@@ -1,17 +1,17 @@
 # 灵眸 数据协议
 
 ## kafka数据录入协议
-|信息 | 备注|
-|-------|------|
-|productId|产品线id| 
-|userIp   | 用户ip |
-|eventId  | 事件id |
-|eventIp  | 事件ip |
-|behavior| 触发事件，点击，激活，浏览|
-|eventPrice| 事件价值|
-|eventUrl| 事件logo地址|
-|eventName| 事件内容|
-|ts | 时间戳|
+|信息 |类型| 备注|
+|-------|----|------|
+|productId|int|产品线id| 
+|userIp   |string|用户ip|
+|eventId  |int| 事件id |
+|eventIp  |string|事件ip |
+|behavior| string|触发事件，点击，激活，浏览|
+|eventPrice|int 原始价值乘1000000 | 事件价值 |
+|eventUrl| string|事件logo地址|
+|eventName|string| 事件内容|
+|ts |int| 时间戳|
 
 
 ## json数据格式
