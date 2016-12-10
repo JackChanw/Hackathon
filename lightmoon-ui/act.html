@@ -1,0 +1,218 @@
+﻿<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"  />
+  <title></title>
+  <link rel="stylesheet" href="reset.css" />
+  <style type="text/css">
+    body{
+      /*-webkit-user-select: none;*/
+    }
+    #VoteMain {
+      width: 400px;
+      height: 100%;
+      margin: 0 auto;
+      margin-top: 0px;
+      /*padding: 20px 20px 20px 20px;*/
+    }
+    
+    .VoteItem {
+      width: 90px;
+      height: 100%;
+      border: 1px solid #efefef;
+      float: left;
+      /*margin-left: 20px;*/
+    }
+    
+    .VoteValue {
+      width: 50px;
+      height: 100px;
+      background-color: #f47920;
+      margin: 0 auto;
+      margin-bottom: 0px;
+      border: 1px solid #fff;
+    }
+    
+    .VoteItem:hover .VoteSpan {
+      display: block;
+    }
+    
+    .VoteValue:hover {
+      -webkit-box-shadow: 0px 0px 5px #808080;
+      -moz-box-shadow: 0px 0px 5px #808080;
+      box-shadow: 0px 0px 5px #808080;
+    }
+    
+    .VoteSpan {
+      width: 80px;
+      height: 30px;
+      background-color: #000;
+      float: left;
+      margin-top: -38px;
+      margin-left: -15px;
+      text-align: center;
+      line-height: 30px;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      display: none;
+    }
+    
+    .VoteImg {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      -webkit-box-shadow: 0px 0px 5px #ccc;
+      -moz-box-shadow: 0px 0px 5px #ccc;
+      box-shadow: 0px 0px 5px #ccc;
+      -webkit-border-radius: 50%;
+      -moz-border-radius: 50%;
+      border-radius: 50%;
+      border: 2px solid #fff;
+      margin: 0 auto;
+      margin-left: 5px;
+      margin-top: 10px;
+      cursor: pointer;
+    }
+    
+    .VoteImg:hover {
+      border-color: #4e72b8;
+      -webkit-box-shadow: 0px 0px 5px #444693;
+      -moz-box-shadow: 0px 0px 5px #444693;
+      box-shadow: 0px 0px 5px #444693;
+    }
+    
+    .VoteText {
+      font: 15px "微软雅黑", Arial, Helvetica, sans-serif;
+      text-align: center;
+      font-weight: 600;
+      color: #333;
+      line-height: 10px;
+      margin-top: 5px;
+    }
+    
+    .VoteSpanTri {
+      position: absolute;
+      width: 10px;
+      height: 6px;
+      margin-top: 30px;
+      margin-left: -15px;
+    }
+  </style>
+
+</head>
+
+<body>
+
+<div id="Demo" style="text-align:center;">
+  <div id="VoteMain"></div>
+</div>
+
+<script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function (e) {
+    
+//    console.log(Vote.voteJson[0]['Value']);
+    Vote.Init();
+  });
+  var Vote = {
+    voteJson: [
+      {id: 1, Name: "多盟五虎", Img: "images/tou.png", Value: 0},
+      {id: 2, Name: "Rising-Tide", Img: "images/tou.png", Value: 0},
+      {id: 3, Name: "OMG", Img: "images/tou.png", Value: 0},
+      {id: 4, Name: "玄蛇队", Img: "images/tou.png", Value: 0},
+      {id: 5, Name: "伐木累", Img: "images/tou.png", Value: 0},
+      {id: 6, Name: "Tsia", Img: "images/tou.png", Value: 0},
+      {id: 7, Name: "Ctrl F5", Img: "images/tou.png", Value: 0},
+      {id: 8, Name: "蓝鲸战队", Img: "images/tou.png", Value: 0},
+      {id: 9, Name: "First Blood", Img: "images/tou.png", Value: 0},
+      {id: 10, Name: "终影骑士", Img: "images/tou.png", Value: 0},
+      {id: 11, Name: "不二战队", Img: "images/tou.png", Value: 0},
+      {id: 12, Name: "Delibro", Img: "images/tou.png", Value: 0},
+      {id: 13, Name: "Blue Brain", Img: "images/tou.png", Value: 0}
+    ],
+    Init: function () {
+      $.get('//lightmoon.moxz.cn/hackathon/d/rank').done(function(data){
+        if(data.status){
+//          console.log();
+          for(var i=1;i<Object.keys(data.list).length+1;i++){
+            Vote.voteJson[i-1]['Value'] = data.list[i];
+          }
+          for (var i = 0; i < Vote.voteJson.length; i++) {
+            var mName = Vote.voteJson[i].Name;
+            var mImg = Vote.voteJson[i].Img;
+            var mValue = Vote.voteJson[i].Value;
+            var mID = Vote.voteJson[i].id;
+            var VoteItem = $("<div></div>");
+            VoteItem.attr("class", "VoteItem");
+            $("#VoteMain").append(VoteItem);
+    
+            var VoteImg = $("<img title=\"支持一下\" src=\"" + mImg + "\" />");
+            VoteImg.attr("class", "VoteImg VoteImg_"+mID);
+            VoteImg.attr("vodeId", mID);
+            VoteItem.append(VoteImg);
+            jQuery(".VoteImg_"+mID).click(function () {
+              $(this).next().css("height", $(this).next().height() + 1 + "px");
+              $(this).next().css("margin-top", "0px");
+              $(this).next().css("display", "none");
+              $(this).next().find(".VoteSpan").html($(this).next().height());
+              var VoteSpanTri = $("<span></span>");
+              VoteSpanTri.attr("class", "VoteSpanTri");
+              $(this).next().find(".VoteSpan").append(VoteSpanTri);
+              //发送投票数据，Shua As You Like
+              
+              var posterID = $(this).attr('vodeId');
+              Vote.voteJson[posterID - 1].Value++;
+              mName = Vote.voteJson[posterID - 1].Name;
+              mValue = Vote.voteJson[posterID - 1].Value;
+              
+//              console.log(posterID);
+              $.ajax("//lightmoon.moxz.cn/hackathon/d/add", {
+                type: 'post',
+                data: {tid:posterID},
+//                headers: { myheader: 'my-header-value' },
+                success: function(event, jqXHR, options, data){
+//                  var VoteText = $("<p></p>");
+                  console.log(event,jqXHR,options,data);
+                  jQuery(".VoteText_"+posterID).html(mName+"<br />("+mValue+")");
+                  
+//                  VoteItem.append(VoteText);
+                }
+              });
+            });
+            
+    
+            var VoteValue = $("<div></div>");
+            VoteValue.attr("class", "VoteValue");
+            VoteValue.css("margin-top", "0px");
+            VoteValue.css("display", "none");
+            VoteValue.animate({height: mValue + "px"}, 500);
+            VoteItem.append(VoteValue);
+    
+            var VoteSpan = $("<div>" + mValue + "</div>");
+            VoteSpan.attr("class", "VoteSpan");
+            VoteValue.append(VoteSpan);
+    
+            var VoteSpanTri = $("<span></span>");
+            VoteSpanTri.attr("class", "VoteSpanTri");
+            VoteSpan.append(VoteSpanTri);
+    
+            var VoteText = $("<p></p>");
+            VoteText.html(mName+"<br />("+mValue+")");
+            VoteText.attr("class", "VoteText_"+Vote.voteJson[i].id);
+            VoteItem.append(VoteText);
+            if(i % 3 == 0) VoteItem.append("<div class='clearfix'></div>");
+          }
+        }
+//        console.log(data);
+      });
+      
+      
+    }
+  }
+</script>
+
+</body>
+</html>
+
