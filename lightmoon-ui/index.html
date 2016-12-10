@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="UTF-8">
+  <title>Lightmoon·灵眸</title>
+  <link rel="stylesheet" href="style.css" type="text/css"/>
+</head>
+<body>
+<div class="container-fluid">
+  <div class="row">
+    <!--<div id="map"></div>-->
+    <div id="map"></div>
+    <canvas id="canvas"></canvas>
+    <div id="time"></div>
+  </div>
+  
+  <div class="row toobar col-md-12">
+    <div class="col-md-12">
+      <div class="col-md-2  pull-left">
+        <div class="logo-text"><img src="logo.png" class="logo"/></div>
+        <div class="logo-text"><span>Lightmoon</span></div>
+      </div>
+      <div class="col-md-2 pull-right left-container" id="text-line-4">
+        <div><span class="header-text">实时广告浏览量</span></div>
+        <div><span class="header-text">自2016-12-09起</span></div>
+      </div>
+    </div>
+  
+  </div>
+  <div class="row toobar-bottom col-md-12">
+    <div class="col-md-4 pull-left">
+      <!--<div class="col-md-12">-->
+        
+        <div class="left-container" id="text-line-1"></div>
+        <div class="left-container" id="text-line-2"></div>
+        <div class="left-container" id="text-line-3"></div>
+      <div class="left-container-qrcode"><img src="qr.png" class="qrlogo"/></div>
+        <!--<div class="left-container" ></div>-->
+      <!--</div>-->
+    </div>
+    <div class="col-md-2 pull-right">
+      <div id="info-box" class="info-box"></div>
+    </div>
+  </div>
+  
+</div>
+</body>
+<script src="jquery-3.1.1.min.js"></script>
+<!--<script type="text/javascript" src="http://api.map.baidu.com/getscript?v=2.0&ak=1XjLLEhZhQNUzd93EjU5nOGQ&services=&t=20161208141700"></script>-->
+<!--<script src="mapv.min.js"></script>-->
+<script src="echarts-all.js"></script>
+<script src="app.js"></script>
+</html>
